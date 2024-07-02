@@ -20,19 +20,19 @@ async function main() {
     );
     const botApi = new Telegraf(botToken);
     botApi.start(c => c.reply(
-        "Ciao! Questo è un bot per la generazione automatica di notifiche per i raid su Pokémon GO."
+        "Ciao! Questo è un bot per la generazione automatica di notifiche per i raid su Pokémon GO. "
         + "Usa /help per sapere di più sul suo funzionamento."
     ));
     botApi.help(c => c.replyWithMarkdownV2(
         "Comandi disponibili:\n"
          + "• /in: usalo una sola volta per ricevere le notifiche anche con il gruppo in silenzioso\n"
          + "• /out: usalo una sola volta per *NON* ricevere più le notifiche anche con il gruppo in silezioso\n"
-         + "• /raid: usalo per generare una notifica automatica per un raid specificando, nell'ordine, il nome del Pokémon e il tempo rimanente"
-         + "Questo bot funziona solamente per i gruppi Telegram, non per chat private."
+         + "• /raid: usalo per generare una notifica automatica per un raid specificando, nell'ordine, il nome del Pokémon e il tempo rimanente\n"
+         + "Questo bot funziona solamente per i gruppi Telegram, non per chat private\\."
     ));
     botApi.command("in", async c => {
         if (!["group", "supergroup"].includes(c.chat.type)) {
-            return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi");
+            return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!");
         }
         const name = c.from.username ?? c.from.first_name;
         if (await model.insertUser(c.from.id, name, c.chat.id) > 0) {
@@ -42,7 +42,7 @@ async function main() {
     });
     botApi.command("out", async c => {
         if (!["group", "supergroup"].includes(c.chat.type)) {
-            return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi");
+            return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!");
         }
         if (await model.deleteUser(c.from.id, c.chat.id) > 0) {
             return await c.reply(`Ho rimosso ${c.from.username ?? c.from.first_name} da chi notificare!`);
@@ -51,7 +51,7 @@ async function main() {
     });
     botApi.command("raid", async c => {
         if (!["group", "supergroup"].includes(c.chat.type)) {
-            return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi");
+            return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!");
         }
         const [ pokemonName, minutes ]: string[] = c.args;
         if (!pokemonName || !minutes) {
