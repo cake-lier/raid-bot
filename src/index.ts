@@ -2,14 +2,17 @@ import { Telegraf } from "telegraf";
 import { Model } from "./model";
 
 async function main() {
+    const dbUsername = process.env["DB_USERNAME"]!;
+    const dbPassword = process.env["DB_PASSWORD"]!;
+    const appName = process.env["APP_NAME"]!;
     const dbName = process.env["DB_NAME"]!;
     const botToken = process.env["BOT_TOKEN"]!;
     const model = await Model.create(
-        process.env["DB_HOST"] ?? "localhost",
+        process.env["DB_HOST"] ?? "0.0.0.0",
         Number.parseInt(process.env["DB_PORT"] ?? "27017"),
-        process.env["USERNAME"] ?? "",
-        process.env["PASSWORD"] ?? "",
-        process.env["APP_NAME"] ?? "",
+        dbUsername,
+        dbPassword,
+        appName,
         dbName
     );
     const botApi = new Telegraf(botToken);
