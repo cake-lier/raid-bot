@@ -16,14 +16,14 @@ async function main() {
     );
     const botApi = new Telegraf(botToken);
     botApi.start(c => c.reply(
-        `Ciao! Questo è un bot per la generazione automatica di notifiche per i raid su Pokémon GO.
-        Usa /help per sapere di più sul suo funzionamento.`
+        "Ciao! Questo è un bot per la generazione automatica di notifiche per i raid su Pokémon GO."
+        + "Usa /help per sapere di più sul suo funzionamento."
     ));
     botApi.help(c => c.replyWithMarkdownV2(
-        `Comandi disponibili:
-        * /in: usalo una sola volta per ricere le notifiche anche con il gruppo in silenzioso
-        * /out: usalo una sola volta per **NON** ricevere più le notifiche anche con il gruppo in silezioso
-        * /raid: usalo per generare una notifica automatica per un raid specificando, nell'ordine, il nome del Pokémon e il tempo rimanente`
+        "Comandi disponibili:\n"
+         + "• /in: usalo una sola volta per ricere le notifiche anche con il gruppo in silenzioso\n"
+         + "• /out: usalo una sola volta per **NON** ricevere più le notifiche anche con il gruppo in silezioso\n"
+         + "• /raid: usalo per generare una notifica automatica per un raid specificando, nell'ordine, il nome del Pokémon e il tempo rimanente"
     ));
     botApi.command("in", async c => {
         const name = c.from.username ?? c.from.first_name;
