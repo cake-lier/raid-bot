@@ -27,7 +27,7 @@ async function main() {
         "Comandi disponibili:\n"
          + "• /in: usalo una sola volta per ricevere le notifiche anche con il gruppo in silenzioso\n"
          + "• /out: usalo una sola volta per *NON* ricevere più le notifiche anche con il gruppo in silezioso\n"
-         + "• /raid: usalo per generare una notifica automatica per un raid specificando, nell'ordine, il nome del Pokémon e il tempo rimanente\n"
+         + "• /raid: usalo per generare una notifica automatica per un raid specificando, nell'ordine, il nome del Pokémon e il tempo rimanente\n\n"
          + "Questo bot funziona solamente per i gruppi Telegram, non per chat private\\."
     ));
     botApi.command("in", async c => {
