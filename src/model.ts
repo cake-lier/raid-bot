@@ -11,14 +11,13 @@ export class Model {
 
     public static async create(
         dbHost: string,
-        dbPort: number,
         dbUsername: string,
         dbPassword: string,
         appName: string,
         dbName: string
     ): Promise<Model> {
         const client = new MongoClient(
-            `mongodb+srv://${dbUsername}:${dbPassword}@${dbHost}:${dbPort}/?retryWrites=true&w=majority&appName=${appName}`
+            `mongodb+srv://${dbUsername}:${dbPassword}@${dbHost}/?retryWrites=true&w=majority&appName=${appName}`
         );
         await client.connect();
         return new Model(client, dbName);

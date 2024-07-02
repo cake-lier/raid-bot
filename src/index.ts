@@ -8,8 +8,7 @@ async function main() {
     const dbName = process.env["DB_NAME"]!;
     const botToken = process.env["BOT_TOKEN"]!;
     const model = await Model.create(
-        process.env["DB_HOST"] ?? "0.0.0.0",
-        Number.parseInt(process.env["DB_PORT"] ?? "27017"),
+        process.env["DB_HOST"] ?? "localhost",
         dbUsername,
         dbPassword,
         appName,
