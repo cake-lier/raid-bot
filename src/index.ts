@@ -35,7 +35,7 @@ async function main() {
             return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!");
         }
         const name = c.from.username ?? c.from.first_name;
-        if (await model.insertUser(c.from.id, name, c.chat.id) > 0) {
+        if (await model.insertUser(c.from.id, name, c.chat.id)) {
             return await c.reply(`Ho inserito ${name} tra chi notificare!`);
         }
         return Promise.resolve();
@@ -44,7 +44,7 @@ async function main() {
         if (!["group", "supergroup"].includes(c.chat.type)) {
             return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!");
         }
-        if (await model.deleteUser(c.from.id, c.chat.id) > 0) {
+        if (await model.deleteUser(c.from.id, c.chat.id)) {
             return await c.reply(`Ho rimosso ${c.from.username ?? c.from.first_name} da chi notificare!`);
         }
         return Promise.resolve();

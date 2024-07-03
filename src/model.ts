@@ -23,22 +23,24 @@ export class Model {
         return new Model(client, dbName);
     }
 
-    public async insertUser(userId: number, username: string, chatId: number): Promise<number> {
+    public async insertUser(userId: number, username: string, chatId: number): Promise<boolean> {
         try {
             return await this.db.collection("subscriptions").insertOne({
                 userId,
                 username,
                 chatId
-            }).then(() => 1);
+            }).then(() => true);
         } catch {}
-        return Promise.resolve(0);
+        return Promise.resolve(false);
     }
 
-    public async deleteUser(userId: number, chatId: number): Promise<number> {
+    public async deleteUser(userId: number, chatId: number): Promise<boolean> {
         try {
-            return await this.db.collection("subscriptions").deleteOne({userId, chatId}).then(() => 1);
+            return await this.db.collection("subscriptions")
+                                .deleteOne({userId, chatId})
+                                .then(r => r.deletedCount > 0);
         } catch {}
-        return Promise.resolve(0);
+        return Promise.resolve(false);
     }
 
     public async getAllUsers(chatId: number): Promise<readonly string[]> {
