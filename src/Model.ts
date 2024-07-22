@@ -1,26 +1,21 @@
 import { Db, MongoClient } from "mongodb";
+import {ConnectionOptions, getConnectionString} from "./ConnectionOptions";
 
 export class Model {
     private readonly client: MongoClient;
     private readonly db: Db;
 
-    private constructor(client: MongoClient, dbName: string) {
+    private constructor(client: MongoClient, db: Db) {
         this.client = client;
-        this.db = client.db(dbName);
+        this.db = db;
     }
 
-    public static async create(
-        dbHost: string,
-        dbUsername: string,
-        dbPassword: string,
-        appName: string,
-        dbName: string
-    ): Promise<Model> {
-        const client = new MongoClient(
-            `mongodb+srv://${dbUsername}:${dbPassword}@${dbHost}/?retryWrites=true&w=majority&appName=${appName}`
-        );
+    public static async create(connectionOptions: ConnectionOptions): Promise<Model> {
+        const client = new MongoClient(getConnectionString(connectionOptions));
         await client.connect();
-        return new Model(client, dbName);
+        const db = client.db(connectionOptions.dbName);
+        await db.createIndex("subscriptions",  { "userId": 1, "chatId": 1 }, { unique: true });
+        return new Model(client, db);
     }
 
     public async insertUser(userId: number, username: string, chatId: number): Promise<boolean> {
