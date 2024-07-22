@@ -10,11 +10,11 @@ let model: Model | undefined = undefined;
 beforeAll(async () => {
     mongoDb = await new MongoDBContainer("mongo:5.0.28").start();
     model = await Model.create(
-        SimpleFormatOptions(O.none, O.none, "localhost", O.some(mongoDb?.getFirstMappedPort()!), "raid-bot")
+        SimpleFormatOptions(O.none, O.none, "localhost", O.fromNullable(mongoDb.getFirstMappedPort()), "raid-bot")
     );
 }, 30_000);
 
-describe("A model", async () => {
+describe("A model", () => {
     describe("when inserting a new user", () => {
         it("should add it to the database", async () => {
             expect(await model?.insertUser(42, "cake_lier", 42)).toBe(true);

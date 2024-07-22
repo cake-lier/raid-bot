@@ -61,13 +61,13 @@ const main =
                     )
                 );
             });
-            process.once("SIGINT", async () => {
+            process.once("SIGINT", () => {
                 b.stop("SIGINT");
-                await m.cleanUp();
+                m.cleanUp().catch((e: unknown) => { console.error(e) });
             });
-            process.once("SIGTERM", async () => {
+            process.once("SIGTERM", () => {
                 b.stop("SIGTERM");
-                await m.cleanUp();
+                m.cleanUp().catch((e: unknown) => { console.error(e) });
             });
             return b.launch({
                 webhook: {
@@ -78,4 +78,4 @@ const main =
         }, String))
     );
 
-main().then(() => console.log("Ready")).catch(console.error);
+main().then(() => { console.log("Ready") }).catch((e: unknown) => { console.error(e) });

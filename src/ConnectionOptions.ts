@@ -47,15 +47,15 @@ export const getConnectionString = (options: ConnectionOptions): string => {
             return "mongodb://"
                 + O.fold(
                     () => "",
-                    u => O.fold(
+                    (u: string) => O.fold(
                         () => `${u}@`,
-                        p => `${u}:${p}@`
+                        (p: string) => `${u}:${p}@`
                     )(options.dbPassword)
                 )(options.dbUsername)
                 + options.dbHost
                 + pipe(
                     options.dbPort,
-                    O.map(p => `:${p}`),
+                    O.map(p => `:${p.toString()}`),
                     O.getOrElse(() => "")
                 )
                 + "/?directConnection=true";
