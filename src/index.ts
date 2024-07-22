@@ -17,15 +17,15 @@ const main =
         TE.let("b", ({ t }) => new Telegraf(t)),
         TE.flatMap( ({ m, b }) => TE.tryCatch( () => {
             b.start(c => c.reply(
-                "Ciao! QuesTE è un bot per la generazione auTEmatica di notifiche per i raid su Pokémon GO. "
-                + "Usa /help per sapere di più sul suo funzionamenTE."
+                "Ciao! Questo è un bot per la generazione automatica di notifiche per i raid su Pokémon GO. "
+                + "Usa /help per sapere di più sul suo funzionamento."
             ));
             b.help(c => c.replyWithMarkdownV2(
                 "Comandi disponibili:\n"
                 + "• /in: usalo una sola volta per ricevere le notifiche anche con il gruppo in silenzioso\n"
                 + "• /out: usalo una sola volta per *NON* ricevere più le notifiche anche con il gruppo in silezioso\n"
-                + "• /raid: usalo per generare una notifica auTEmatica per un raid specificando, nell'ordine, il nome del Pokémon e il tempo rimanente\n\n"
-                + "QuesTE bot funziona solamente per i gruppi Telegram, non per chat private\\."
+                + "• /raid: usalo per generare una notifica automatica per un raid specificando, nell'ordine, il nome del Pokémon e il tempo rimanente\n\n"
+                + "Questo bot funziona solamente per i gruppi Telegram, non per chat private\\."
             ));
             b.command("in", async c => {
                 if (!["group", "supergroup"].includes(c.chat.type)) {
@@ -33,7 +33,7 @@ const main =
                 }
                 const name = c.from.username ?? c.from.first_name;
                 if (await m.insertUser(c.from.id, name, c.chat.id)) {
-                    return await c.reply(`Ho inseriTE ${name} tra chi notificare!`);
+                    return await c.reply(`Ho inserito ${name} tra chi notificare!`);
                 }
                 return Promise.resolve();
             });
@@ -55,7 +55,7 @@ const main =
                     return await c.reply("Al messaggio manca qualcosa!");
                 }
                 return await c.reply(
-                    `Un nuovo raid per ${pokemonName} è iniziaTE e mancano ${minutes} minuti alla fine!\n`.concat(
+                    `Un nuovo raid per ${pokemonName} è iniziato e mancano ${minutes} minuti alla fine!\n`.concat(
                         ...(await m.getAllUsers(c.chat.id)).map(u => `@${u}\n`),
                         "!!!"
                     )
