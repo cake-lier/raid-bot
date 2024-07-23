@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "module": "nodenext",
+        "skipLibCheck": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
         "exactOptionalPropertyTypes": true,
@@ -16,5 +17,5 @@
         "sourceMap": true
     },
     "include": ["src/**/*"],
-    "exclude": ["**/*.spec.ts"]
+    "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }
