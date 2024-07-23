@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getConnectionString, SimpleFormatOptions, SrvFormatOptions } from "./ConnectionOptions";
+import { getConnectionString, SimpleFormatOptions, SrvFormatOptions } from "../main/ConnectionOptions";
 import * as O from "fp-ts/Option";
 
 describe("A SRV connection string", () => {

@@ -1,8 +1,8 @@
 import { it, describe, expect, beforeAll, afterAll } from "vitest";
 import { MongoDBContainer, StartedMongoDBContainer } from "@testcontainers/mongodb";
-import { Model } from "./Model";
+import { Model } from "../main/Model";
 import * as O from "fp-ts/Option";
-import { SimpleFormatOptions } from "./ConnectionOptions";
+import { SimpleFormatOptions } from "../main/ConnectionOptions";
 
 let mongoDb: StartedMongoDBContainer | undefined = undefined;
 let model: Model | undefined = undefined;
