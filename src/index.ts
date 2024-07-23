@@ -1,8 +1,9 @@
 import {Telegraf} from "telegraf";
 import {Model} from "./Model";
 import {SrvFormatOptions} from "./ConnectionOptions";
+import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
-import {pipe} from "fp-ts/function";
+import {constVoid, pipe} from "fp-ts/function";
 
 const main =
     pipe(
@@ -50,14 +51,21 @@ const main =
                 if (!["group", "supergroup"].includes(c.chat.type)) {
                     return await c.reply("Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!");
                 }
-                const [ pokemonName, minutes ] = c.args;
-                if (!pokemonName || !minutes) {
-                    return await c.reply("Al messaggio manca qualcosa!");
-                }
-                return await c.reply(
-                    `Un nuovo raid per ${pokemonName} è iniziato e mancano ${minutes} minuti alla fine!\n`.concat(
-                        ...(await m.getAllUsers(c.chat.id)).map(u => `@${u}\n`),
-                        "!!!"
+                return await pipe(
+                    E.Do,
+                    E.bind("p", () => E.fromNullable("Al messaggio manca il pokémon!")(c.args[0])),
+                    E.bind("m", () => E.fromNullable("Al messaggio manca il numero di minuti!")(c.args[1])),
+                    E.map(({ p, m }) => `Un nuovo raid per ${p} è iniziato e mancano ${m} minuti alla fine!\n`),
+                    E.fold(
+                        e => c.reply(e),
+                        f => pipe(
+                            TE.tryCatch(() => m.getAllUsers(c.chat.id), String),
+                            TE.map(us => f.concat(...us.map(u => `@${u}\n`), "!!!")),
+                            TE.foldW(
+                                e => () => Promise.reject(e),
+                                r => () => c.reply(r)
+                            )
+                        )()
                     )
                 );
             });
@@ -78,4 +86,6 @@ const main =
         }, String))
     );
 
-main().then(() => { console.log("Ready") }).catch((e: unknown) => { console.error(e) });
+main().then(r => { E.fold(e => { console.error(e) }, constVoid)(r) })
+      .catch((e: unknown) => { console.error(e) });
+
