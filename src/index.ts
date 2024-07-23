@@ -17,7 +17,7 @@ const main = pipe(
     TE.bind("a", () => TE.fromNullable("Missing app name env variable")(process.env["APP_NAME"])),
     TE.bind("d", () => TE.fromNullable("Missing db name env variable")(process.env["DB_NAME"])),
     TE.bind("m", ({ h, u, p, a, d }) =>
-        TE.tryCatch(() => Model.create(SrvFormatOptions(h, u, p, a, d)), String),
+        TE.tryCatch(() => Model.create(SrvFormatOptions(u, p, h, d, a)), String),
     ),
     TE.bind("t", () => TE.fromNullable("Missing bot token env variable")(process.env["BOT_TOKEN"])),
     TE.let("b", ({ t }) => new Telegraf(t)),
