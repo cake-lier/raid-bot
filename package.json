@@ -1,33 +1,36 @@
 {
-  "name": "raid-bot",
-  "version": "1.0.0",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "node src/index.js",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "fp-ts": "^2.16.8",
-    "mongodb": "^6.8.0",
-    "telegraf": "^4.16.3"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.7.0",
-    "@testcontainers/mongodb": "^10.10.4",
-    "@types/eslint__js": "^8.42.3",
-    "@types/node": "^20.14.9",
-    "@vitest/coverage-v8": "^2.0.4",
-    "eslint": "^8.57.0",
-    "testcontainers": "^10.10.4",
-    "tsx": "^4.15.8",
-    "typegram": "^5.2.0",
-    "typescript": "^5.5.3",
-    "typescript-eslint": "^7.17.0",
-    "vitest": "^2.0.3"
-  }
+    "name": "raid-bot",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "node src/index.js",
+        "test": "vitest",
+        "coverage": "vitest run --coverage"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "fp-ts": "^2.16.8",
+        "mongodb": "^6.8.0",
+        "telegraf": "^4.16.3"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.7.0",
+        "@testcontainers/mongodb": "^10.10.4",
+        "@types/eslint__js": "^8.42.3",
+        "@types/eslint-config-prettier": "^6.11.3",
+        "@types/node": "^20.14.9",
+        "@vitest/coverage-v8": "^2.0.4",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "prettier": "^3.3.3",
+        "testcontainers": "^10.10.4",
+        "tsx": "^4.15.8",
+        "typegram": "^5.2.0",
+        "typescript": "^5.5.3",
+        "typescript-eslint": "^7.17.0",
+        "vitest": "^2.0.3"
+    }
 }
