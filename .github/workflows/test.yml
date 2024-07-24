@@ -12,6 +12,8 @@ on:
             - renovate.json
             - ".github/workflows/**"
             - .releaserc.yml
+            - Dockerfile
+            - .dockerignore
     workflow_call:
         secrets:
             CODECOV_TOKEN:
@@ -36,6 +38,10 @@ jobs:
                   node-version: "lts/*"
             - name: Install dependencies
               run: npm install
+            - name: Build
+              run: npx tsc
+            - name: test
+              run: ls
             - name: Lint with eslint
               run: npx eslint .
             - name: Reformat with prettier
