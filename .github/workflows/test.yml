@@ -1,0 +1,57 @@
+name: Test
+
+on:
+    push:
+        branches-ignore:
+            - main
+            - renovate/configure
+        paths-ignore:
+            - CHANGELOG.md
+            - README.md
+            - CONTRIBUTING.md
+            - renovate.json
+            - ".github/workflows/**"
+            - .releaserc.yml
+    workflow_call:
+        secrets:
+            CODECOV_TOKEN:
+                description: "Codecov token"
+                required: true
+            SONAR_TOKEN:
+                description: "Sonar token"
+                required: true
+
+jobs:
+    test:
+        name: Build and test
+        runs-on: ubuntu-22.04
+        env:
+            TERM: dumb
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Setup node environment
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - name: Install dependencies
+              run: npm install
+            - name: Lint with eslint
+              run: npx eslint .
+            - name: Reformat with prettier
+              run: npx prettier . --check
+            - name: Test and coverage
+              run: npm run coverage
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@v3
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  directory: coverage
+                  fail_ci_if_error: true
+                  flags: unittests
+                  name: codecov-umbrella
+                  verbose: true
+            - name: SonarCloud scan
+              run: node sonar-scanner.js
+              env:
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
