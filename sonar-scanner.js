@@ -1,4 +1,4 @@
-const scanner = require('sonarqube-scanner');
+const scanner = require("sonarqube-scanner");
 
 void scanner(
     {
@@ -7,5 +7,5 @@ void scanner(
             "sonar.tests": "src/test",
         },
     },
-    () => process.exit()
+    () => process.exit(),
 );

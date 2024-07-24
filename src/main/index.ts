@@ -5,7 +5,8 @@ import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
 import { constVoid, pipe } from "fp-ts/function";
 
-const notInGroupError = "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!";
+const notInGroupError =
+    "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!";
 
 const main = pipe(
     TE.Do,
