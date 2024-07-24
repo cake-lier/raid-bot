@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { getConnectionString, SimpleFormatOptions, SrvFormatOptions } from "../main/ConnectionOptions";
+import {
+    getConnectionString,
+    SimpleFormatOptions,
+    SrvFormatOptions,
+} from "../main/ConnectionOptions";
 import * as O from "fp-ts/Option";
 
+/* eslint sonarjs/no-duplicate-string: 0 */
 describe("A SRV connection string", () => {
     describe("when correctly created", () => {
         it("should be valid", () => {

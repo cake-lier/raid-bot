@@ -5,6 +5,8 @@ import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
 import { constVoid, pipe } from "fp-ts/function";
 
+const notInGroupError = "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!";
+
 const main = pipe(
     TE.Do,
     TE.bind("h", () => TE.fromNullable("Missing db hostname env variable")(process.env["DB_HOST"])),
@@ -41,9 +43,7 @@ const main = pipe(
             );
             b.command("in", async (c) => {
                 if (!["group", "supergroup"].includes(c.chat.type)) {
-                    return await c.reply(
-                        "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!",
-                    );
+                    return await c.reply(notInGroupError);
                 }
                 const name = c.from.username ?? c.from.first_name;
                 if (await m.insertUser(c.from.id, name, c.chat.id)) {
@@ -53,9 +53,7 @@ const main = pipe(
             });
             b.command("out", async (c) => {
                 if (!["group", "supergroup"].includes(c.chat.type)) {
-                    return await c.reply(
-                        "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!",
-                    );
+                    return await c.reply(notInGroupError);
                 }
                 if (await m.deleteUser(c.from.id, c.chat.id)) {
                     return await c.reply(
@@ -66,9 +64,7 @@ const main = pipe(
             });
             b.command("raid", async (c) => {
                 if (!["group", "supergroup"].includes(c.chat.type)) {
-                    return await c.reply(
-                        "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!",
-                    );
+                    return await c.reply(notInGroupError);
                 }
                 return await pipe(
                     E.Do,
