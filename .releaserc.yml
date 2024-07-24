@@ -5,7 +5,7 @@ plugins:
       - preset: conventionalcommits
     - "@semantic-release/release-notes-generator"
     - "@semantic-release/changelog"
-    - - "@google/semantic-release-replace-plugin"
+    - - "semantic-release-replace-plugin"
       - replacements:
             - files:
                   - package.json
@@ -19,8 +19,8 @@ plugins:
               countMatches: true
             - files:
                   - package-lock.json
-              from: '\"name\": \"raid-bot\",\n  \"version\": \".*\"'
-              to: "\"name\": \"raid-bot\",\n  \"version\": \"${nextRelease.version}\""
+              from: "\"name\": \"raid-bot\",\n    \"version\": \".*\""
+              to: "\"name\": \"raid-bot\",\n    \"version\": \"${nextRelease.version}\""
               results:
                   - file: package-lock.json
                     hasChanged: true
@@ -29,8 +29,8 @@ plugins:
               countMatches: true
             - files:
                   - package-lock.json
-              from: '\"name\": \"raid-bot\",\n      \"version\": \".*\"'
-              to: "\"name\": \"raid-bot\",\n      \"version\": \"${nextRelease.version}\""
+              from: "\"name\": \"raid-bot\",\n            \"version\": \".*\""
+              to: "\"name\": \"raid-bot\",\n            \"version\": \"${nextRelease.version}\""
               results:
                   - file: package-lock.json
                     hasChanged: true
@@ -40,8 +40,8 @@ plugins:
     - - "@semantic-release/exec"
       - publishCmd: |
             npx tsc;
-            npm docker:build;
-            npm docker:push;
+            npm run docker:build;
+            npm run docker:push;
         shell: /bin/bash
     - - "@semantic-release/git"
       - assets:
