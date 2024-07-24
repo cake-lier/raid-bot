@@ -6,7 +6,7 @@ export default defineConfig({
         coverage: {
             all: false,
             provider: "istanbul",
-            reporter: ["text", "html", "cobertura"],
+            reporter: ["text", "cobertura", "lcov"],
             exclude: [...coverageConfigDefaults.exclude, "**/index.ts"],
         },
     },

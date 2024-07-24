@@ -1,11 +1,18 @@
-const scanner = require("sonarqube-scanner");
+const scanner = require("sonarqube-scanner").default;
 
-void scanner(
+scanner(
     {
         options: {
             "sonar.sources": "src/main",
             "sonar.tests": "src/test",
+            "sonar.organization": "cake-lier",
+            "sonar.projectKey": "cake-lier_raid-bot",
         },
     },
-    () => process.exit(),
+    (error) => {
+        if (error) {
+            console.error(error);
+        }
+        process.exit();
+    },
 );
