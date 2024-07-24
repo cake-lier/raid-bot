@@ -1,0 +1,55 @@
+branches:
+    - main
+plugins:
+    - - "@semantic-release/commit-analyzer"
+      - preset: conventionalcommits
+    - "@semantic-release/release-notes-generator"
+    - "@semantic-release/changelog"
+    - - "@google/semantic-release-replace-plugin"
+      - replacements:
+            - files:
+                  - package.json
+              from: '\"version\": \".*\"'
+              to: '"version": "${nextRelease.version}"'
+              results:
+                  - file: package.json
+                    hasChanged: true
+                    numMatches: 1
+                    numReplacements: 1
+              countMatches: true
+            - files:
+                  - package-lock.json
+              from: '\"name\": \"raid-bot\",\n  \"version\": \".*\"'
+              to: "\"name\": \"raid-bot\",\n  \"version\": \"${nextRelease.version}\""
+              results:
+                  - file: package-lock.json
+                    hasChanged: true
+                    numMatches: 1
+                    numReplacements: 1
+              countMatches: true
+            - files:
+                  - package-lock.json
+              from: '\"name\": \"raid-bot\",\n      \"version\": \".*\"'
+              to: "\"name\": \"raid-bot\",\n      \"version\": \"${nextRelease.version}\""
+              results:
+                  - file: package-lock.json
+                    hasChanged: true
+                    numMatches: 1
+                    numReplacements: 1
+              countMatches: true
+    - - "@semantic-release/exec"
+      - publishCmd: |
+            npx tsc;
+            npm docker:build;
+            npm docker:push;
+        shell: /bin/bash
+    - - "@semantic-release/git"
+      - assets:
+            - README.md
+            - CHANGELOG.md
+            - package.json
+            - package-lock.json
+    - - "@semantic-release/github"
+      - assets:
+            - path: src/main/*.js
+              label: Executable JS files
