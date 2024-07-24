@@ -17,5 +17,9 @@
         "sourceMap": true
     },
     "include": ["src/**/*"],
-    "exclude": ["**/*.spec.ts"]
+    "exclude": ["**/*.spec.ts"],
+    "typedocOptions": {
+        "entryPoints": ["src/main/index.ts"],
+        "out": "docs"
+    }
 }
