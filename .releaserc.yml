@@ -39,9 +39,9 @@ plugins:
               countMatches: true
     - - "@semantic-release/exec"
       - publishCmd: |
-            npx tsc;
-            npm run docker:build;
-            npm run docker:push;
+            npx tsc || exit 1;
+            npm run docker:build || exit 2;
+            npm run docker:push || exit 3;
         shell: /bin/bash
     - - "@semantic-release/git"
       - assets:
