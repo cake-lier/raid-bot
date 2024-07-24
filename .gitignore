@@ -257,7 +257,9 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/node,webstorm
 .idea
 
-*.js
-*.js.map
+src/**/*.js
+src/**/*.js.map
 *.mjs
 *.mjs.map
+
+docs
