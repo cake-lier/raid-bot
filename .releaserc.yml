@@ -40,8 +40,9 @@ plugins:
     - - "@semantic-release/exec"
       - publishCmd: |
             npx tsc || exit 1;
-            npm run docker:build || exit 2;
-            npm run docker:push || exit 3;
+            npm pack || exit 2;
+            npm run docker:build || exit 3;
+            npm run docker:push || exit 4;
         shell: /bin/bash
     - - "@semantic-release/git"
       - assets:
@@ -51,5 +52,5 @@ plugins:
             - package-lock.json
     - - "@semantic-release/github"
       - assets:
-            - path: src/main/*.js
-              label: Executable JS files
+            - path: "raid-bot-*.tgz"
+              label: Executable JS package

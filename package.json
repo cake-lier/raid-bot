@@ -1,7 +1,7 @@
 {
     "name": "raid-bot",
     "version": "0.0.0",
-    "main": "src/index.js",
+    "main": "src/main/index.js",
     "scripts": {
         "start": "node src/main/index.js",
         "test": "vitest",
@@ -12,7 +12,10 @@
     "keywords": [],
     "author": "Matteo Castellucci",
     "license": "MIT",
-    "description": "",
+    "description": "Telegram bot for announcing Pokémon raids",
+    "files": [
+        "src/main/*.js"
+    ],
     "dependencies": {
         "fp-ts": "^2.16.8",
         "mongodb": "^6.8.0",
