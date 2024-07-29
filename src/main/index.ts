@@ -4,6 +4,7 @@ import { SrvFormatOptions } from "./ConnectionOptions";
 import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
 import { constVoid, pipe } from "fp-ts/function";
+import express from "express";
 
 const notInGroupError =
     "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!";
@@ -103,14 +104,18 @@ const main = pipe(
                     console.error(e);
                 });
             });
-            return b.launch({
-                webhook: {
-                    domain: "https://raid-bot-3vzy.onrender.com",
-                    port: 10_000,
-                },
-            });
+            return b.createWebhook({ domain: "https://raid-bot-3vzy.onrender.com/webhook" });
         }, String),
     ),
+    TE.flatMap(r => TE.tryCatch(() => {
+        const app = express();
+        return new Promise<void>((resolve, _) =>
+            app.use(express.static("out"))
+               .use("/webhook", r)
+               .get("*", (_, res) => res.sendFile("out/index.html"))
+               .listen(10_000, () => resolve())
+        );
+    }, String)),
 );
 
 main()
