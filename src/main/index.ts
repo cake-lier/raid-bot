@@ -104,18 +104,32 @@ const main = pipe(
                     console.error(e);
                 });
             });
-            return b.createWebhook({ domain: "https://raid-bot-3vzy.onrender.com/webhook" });
+            return b.createWebhook({
+                domain: "https://raid-bot-3vzy.onrender.com",
+                path: "/webhook",
+            });
         }, String),
     ),
-    TE.flatMap(r => TE.tryCatch(() => {
-        const app = express();
-        return new Promise<void>((resolve, _) =>
-            app.use(express.static("out"))
-               .use("/webhook", r)
-               .get("*", (_, res) => res.sendFile("out/index.html"))
-               .listen(10_000, () => resolve())
-        );
-    }, String)),
+    TE.flatMap((r) =>
+        TE.tryCatch(() => {
+            const app = express();
+            return new Promise<void>((resolve) =>
+                app
+                    .use(express.static("out"))
+                    .use((req, res, next) => {
+                        r(req, res, next).catch((e: unknown) => {
+                            console.error(e);
+                        });
+                    })
+                    .get("*", (_, res) => {
+                        res.sendFile("out/404.html", { root: process.cwd() });
+                    })
+                    .listen(10_000, () => {
+                        resolve();
+                    }),
+            );
+        }, String),
+    ),
 );
 
 main()
