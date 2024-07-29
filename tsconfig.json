@@ -16,7 +16,7 @@
         "strict": true,
         "sourceMap": true
     },
-    "include": ["src/**/*", "**.mts"],
+    "include": ["src/**/*.ts"],
     "exclude": ["**/*.spec.ts"],
     "typedocOptions": {
         "entryPoints": ["src/main/index.ts"],

@@ -12,7 +12,7 @@ on:
             - ".github/workflows/**"
             - .releaserc.yml
             - .prettierrc
-            - eslint.config.mts
+            - eslint.config.mjs
             - vitest.config.mts
             - codecov.yml
     workflow_dispatch:

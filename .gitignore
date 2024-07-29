@@ -259,7 +259,7 @@ fabric.properties
 
 src/**/*.js
 src/**/*.js.map
-*.mjs
-*.mjs.map
+vitest.config.mjs
+vitest.config.mjs.map
 
 docs
