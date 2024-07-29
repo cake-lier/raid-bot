@@ -259,7 +259,27 @@ fabric.properties
 
 src/**/*.js
 src/**/*.js.map
+src/**/*.jsx
+src/**/*.jsx.map
 vitest.config.mjs
 vitest.config.mjs.map
+tailwind.config.mjs
+tailwind.config.mjs.map
 
 docs
+
+# production
+build
+
+# misc
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+next-env.d.ts
