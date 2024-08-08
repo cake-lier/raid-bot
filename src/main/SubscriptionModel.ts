@@ -48,4 +48,13 @@ export class SubscriptionModel {
             .project<{ userId: number; chatId: number; username: string }>({ _id: 0 })
             .toArray();
     }
+
+    public async getSubscriptions(): Promise<Subscription[]> {
+        return await this.storage
+            .getDb()
+            .collection("subscriptions")
+            .find()
+            .project<{ userId: number; chatId: number; username: string }>({ _id: 0 })
+            .toArray();
+    }
 }

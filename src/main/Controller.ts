@@ -18,22 +18,19 @@ declare module "express-session" {
 }
 
 export class Controller {
-    private getSubscriptionsForChat = (
-        request: Request<never, SubscriptionsResponse, { chatId: number }>,
-        response: Response<SubscriptionsResponse>,
-    ): void => {
+    private getSubscriptions = (request: Request, response: Response): void => {
         if (!request.session.user) {
             response.sendStatus(StatusCodes.FORBIDDEN);
         }
         this.subscriptionModel
-            .getSubscriptionsForChat(request.body.chatId)
+            .getSubscriptions()
             .then((subscriptions) => response.json({ subscriptions }))
             .catch(() => response.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR));
     };
 
     private insertSubscription = (
         request: Request<never, Subscription, Subscription>,
-        response: Response<Subscription>,
+        response: Response,
     ): void => {
         if (!request.session.user) {
             response.sendStatus(StatusCodes.FORBIDDEN);
@@ -49,8 +46,8 @@ export class Controller {
     };
 
     private deleteSubscription = (
-        request: Request<never, SubscriptionId, never>,
-        response: Response<never>,
+        request: Request<never, never, SubscriptionId>,
+        response: Response,
     ): void => {
         if (!request.session.user) {
             response.sendStatus(StatusCodes.FORBIDDEN);
@@ -63,7 +60,7 @@ export class Controller {
             .catch(() => response.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR));
     };
 
-    private getLoggedInUser = (request: Request, response: Response<User>): void => {
+    private getLoggedInUser = (request: Request, response: Response): void => {
         if (!request.session.user) {
             response.sendStatus(StatusCodes.NOT_FOUND);
             return;
@@ -71,7 +68,7 @@ export class Controller {
         response.json(request.session.user);
     };
 
-    private logIn = (request: Request<never, User, FullUser>, response: Response<User>): void => {
+    private logIn = (request: Request<never, User, FullUser>, response: Response): void => {
         this.userModel
             .logIn(request.body)
             .then((result) => {
@@ -101,7 +98,7 @@ export class Controller {
     ) {}
 
     public registerRoutes(app: Express): void {
-        app.get(subscriptionsApiPath, this.getSubscriptionsForChat)
+        app.get(subscriptionsApiPath, this.getSubscriptions)
             .post(subscriptionsApiPath, this.insertSubscription)
             .delete(subscriptionsApiPath, this.deleteSubscription)
             .get(userApiPath, this.getLoggedInUser)
