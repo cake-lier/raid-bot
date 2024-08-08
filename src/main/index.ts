@@ -145,7 +145,8 @@ const main = pipe(
             const app = express();
             const MongoDBStore = connectMongoDBSession(session);
             return new Promise<void>((resolve) => {
-                app.use(express.static("out"))
+                app.use(express.json())
+                    .use(express.static("out"))
                     .use((req, res, next) => {
                         botMiddleware(req, res, next).catch((e: unknown) => {
                             console.error(e);

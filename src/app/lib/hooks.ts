@@ -51,6 +51,9 @@ export const useLogin = () => {
             const response = await fetch(k, {
                 method: "POST",
                 body: JSON.stringify({ username, password }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
             if (!response.ok) {
                 if (response.status === StatusCodes.UNAUTHORIZED.valueOf()) {
@@ -125,6 +128,9 @@ export const useInsertSubscription = () => {
             const response = await fetch(k, {
                 method: "POST",
                 body: JSON.stringify({ userId, chatId, username }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
             if (!response.ok) {
                 if (response.status === StatusCodes.BAD_REQUEST.valueOf()) {
@@ -156,6 +162,9 @@ export const useDeleteSubscription = () => {
             const response = await fetch(k, {
                 method: "DELETE",
                 body: JSON.stringify({ userId, chatId }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
             if (!response.ok) {
                 if (response.status === StatusCodes.BAD_REQUEST.valueOf()) {
