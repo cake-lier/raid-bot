@@ -21,6 +21,7 @@ export class Controller {
     private getSubscriptions = (request: Request, response: Response): void => {
         if (!request.session.user) {
             response.sendStatus(StatusCodes.FORBIDDEN);
+            return;
         }
         this.subscriptionModel
             .getSubscriptions()
@@ -34,6 +35,7 @@ export class Controller {
     ): void => {
         if (!request.session.user) {
             response.sendStatus(StatusCodes.FORBIDDEN);
+            return;
         }
         this.subscriptionModel
             .insertSubscription(request.body)
@@ -51,6 +53,7 @@ export class Controller {
     ): void => {
         if (!request.session.user) {
             response.sendStatus(StatusCodes.FORBIDDEN);
+            return;
         }
         this.subscriptionModel
             .deleteSubscription(request.body)

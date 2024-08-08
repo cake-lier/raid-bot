@@ -16,16 +16,13 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
     const router = useRouter();
     const { isLoadingUser, userResponse } = useLoggedInUser();
+    const { subscriptionsResponse, isLoadingSubscriptions } = useSubscriptions();
+    const { deleteTrigger, isDeleting } = useDeleteSubscription();
+    const { logoutTrigger, isLoggingOut } = useLogout();
     if (isLoadingUser) {
         return "";
     } else if (!userResponse?.isLoggedIn) {
         router.replace("/");
-        return "";
-    }
-    const { subscriptionsResponse, isLoadingSubscriptions } = useSubscriptions();
-    const { deleteTrigger, isDeleting } = useDeleteSubscription();
-    const { logoutTrigger, isLoggingOut } = useLogout();
-    if (isLoadingSubscriptions) {
         return "";
     }
     const deleteBodyTemplate = (user: Subscription) => (
@@ -51,6 +48,7 @@ export default function Dashboard() {
             <DataTable
                 stripedRows
                 sortField="username"
+                sortOrder={1}
                 className="col-12"
                 value={subscriptionsResponse?.subscriptions}
                 loading={isLoadingSubscriptions}

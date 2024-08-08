@@ -146,7 +146,7 @@ const main = pipe(
             const MongoDBStore = connectMongoDBSession(session);
             return new Promise<void>((resolve) => {
                 app.use(express.json())
-                    .use(express.static("out"))
+                    .use(express.static("out", { extensions: ["html"] }))
                     .use((req, res, next) => {
                         botMiddleware(req, res, next).catch((e: unknown) => {
                             console.error(e);
@@ -174,7 +174,7 @@ const main = pipe(
                 new Controller(subscriptionModel, new UserModel(storage)).registerRoutes(app);
                 return app
                     .get("*", (_, res) => {
-                        res.sendFile("out/index.html", { root: process.cwd() });
+                        res.sendFile("out/404.html", { root: process.cwd() });
                     })
                     .listen(10_000, () => {
                         resolve();
