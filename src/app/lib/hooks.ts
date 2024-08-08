@@ -2,18 +2,29 @@
 
 import useSWRMutation from "swr/mutation";
 import useSWR from "swr";
-import { RegisteredUser, RegisteredUserData, User, UserData } from "@/app/lib/types";
+import { FullUser, User } from "@/main/UserModel";
+import { subscriptionsApiPath, SubscriptionsResponse, userApiPath } from "@/main/Controller";
+import { Subscription, SubscriptionId } from "@/main/SubscriptionModel";
+import { StatusCodes } from "http-status-codes";
 
 const genericErrorMessage = "An error has occurred.";
 const unauthorizedErrorMessage = "User has not previously logged in.";
 
-const userApiPath = "/api/users/loggedIn";
+export type UserData =
+    | {
+          readonly isLoggedIn: true;
+          readonly user: User;
+      }
+    | {
+          readonly isLoggedIn: false;
+          readonly user: undefined;
+      };
 
 export const useLoggedInUser = () => {
     const { data, isLoading, error } = useSWR<UserData, Error, string>(userApiPath, async (k) => {
         const response = await fetch(k);
         if (!response.ok) {
-            if (response.status !== 403) {
+            if (response.status !== StatusCodes.NOT_FOUND.valueOf()) {
                 throw new Error(genericErrorMessage);
             }
             return {
@@ -34,24 +45,15 @@ export const useLoggedInUser = () => {
 };
 
 export const useLogin = () => {
-    const { trigger, isMutating, error } = useSWRMutation<
-        User,
-        Error,
-        string,
-        {
-            readonly username: string;
-            readonly password: string;
-        },
-        UserData
-    >(
+    const { trigger, isMutating, error } = useSWRMutation<User, Error, string, FullUser, UserData>(
         userApiPath,
         async (k, { arg: { username, password } }) => {
             const response = await fetch(k, {
-                method: "PUT",
+                method: "POST",
                 body: JSON.stringify({ username, password }),
             });
             if (!response.ok) {
-                if (response.status === 401) {
+                if (response.status === StatusCodes.UNAUTHORIZED.valueOf()) {
                     throw new Error("Username or password were invalid.");
                 }
                 throw new Error(genericErrorMessage);
@@ -90,20 +92,18 @@ export const useLogout = () => {
     };
 };
 
-const registeredUsersApiPath = "/api/registeredUsers";
-
-export const useRegisteredUsers = () => {
-    const { data, isLoading } = useSWR<RegisteredUserData, Error, string>(
-        registeredUsersApiPath,
+export const useSubscriptions = () => {
+    const { data, isLoading } = useSWR<SubscriptionsResponse, Error, string>(
+        subscriptionsApiPath,
         async (k) => {
             const response = await fetch(k);
             if (!response.ok) {
-                if (response.status === 403) {
+                if (response.status === StatusCodes.FORBIDDEN.valueOf()) {
                     throw new Error(unauthorizedErrorMessage);
                 }
                 throw new Error(genericErrorMessage);
             }
-            return (await response.json()) as RegisteredUserData;
+            return (await response.json()) as SubscriptionsResponse;
         },
     );
     return {
@@ -112,31 +112,34 @@ export const useRegisteredUsers = () => {
     };
 };
 
-export const useInsertRegisteredUser = () => {
+export const useInsertSubscription = () => {
     const { trigger, isMutating } = useSWRMutation<
-        RegisteredUserData,
+        Subscription,
         Error,
         string,
-        RegisteredUser
+        Subscription,
+        SubscriptionsResponse
     >(
-        registeredUsersApiPath,
+        subscriptionsApiPath,
         async (k, { arg: { userId, chatId, username } }) => {
             const response = await fetch(k, {
-                method: "PUT",
+                method: "POST",
                 body: JSON.stringify({ userId, chatId, username }),
             });
             if (!response.ok) {
-                if (response.status === 400) {
+                if (response.status === StatusCodes.BAD_REQUEST.valueOf()) {
                     throw new Error("Inserted data was invalid.");
-                } else if (response.status === 403) {
+                } else if (response.status === StatusCodes.FORBIDDEN.valueOf()) {
                     throw new Error(unauthorizedErrorMessage);
                 }
                 throw new Error(genericErrorMessage);
             }
-            return (await response.json()) as RegisteredUserData;
+            return (await response.json()) as Subscription;
         },
         {
-            populateCache: true,
+            populateCache: (result, currentData) => ({
+                subscriptions: [...(currentData?.subscriptions ?? []), result],
+            }),
             revalidate: false,
         },
     );
@@ -146,35 +149,22 @@ export const useInsertRegisteredUser = () => {
     };
 };
 
-export const useDeleteRegisteredUser = () => {
-    const { trigger, isMutating } = useSWRMutation<
-        RegisteredUserData,
-        Error,
-        string,
-        {
-            readonly userId: number;
-            readonly chatId: number;
-        }
-    >(
-        registeredUsersApiPath,
+export const useDeleteSubscription = () => {
+    const { trigger, isMutating } = useSWRMutation<unknown, Error, string, SubscriptionId>(
+        subscriptionsApiPath,
         async (k, { arg: { userId, chatId } }) => {
             const response = await fetch(k, {
                 method: "DELETE",
                 body: JSON.stringify({ userId, chatId }),
             });
             if (!response.ok) {
-                if (response.status === 400) {
+                if (response.status === StatusCodes.BAD_REQUEST.valueOf()) {
                     throw new Error("Data to delete was invalid.");
-                } else if (response.status === 403) {
+                } else if (response.status === StatusCodes.FORBIDDEN.valueOf()) {
                     throw new Error(unauthorizedErrorMessage);
                 }
                 throw new Error(genericErrorMessage);
             }
-            return (await response.json()) as RegisteredUserData;
-        },
-        {
-            populateCache: true,
-            revalidate: false,
         },
     );
     return {

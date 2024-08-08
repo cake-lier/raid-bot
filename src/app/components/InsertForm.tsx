@@ -2,21 +2,19 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { FormEvent, useState } from "react";
-import { useInsertRegisteredUser } from "@/app/lib/hooks";
-import { RegisteredUser } from "@/app/lib/types";
+import { useInsertSubscription } from "@/app/lib/hooks";
+import { Subscription } from "@/main/SubscriptionModel";
 
-export default function InsertForm() {
-    const { insertTrigger, isInserting } = useInsertRegisteredUser();
+export default function InsertForm({ subscriptions }: { subscriptions: Subscription[] }) {
+    const { insertTrigger, isInserting } = useInsertSubscription();
     const [userId, setUserId] = useState(0);
     const [chatId, setChatId] = useState(0);
     const [username, setUsername] = useState("");
     const insertRegisteredUser = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const newRegisteredUser: RegisteredUser = { userId, chatId, username };
-        insertTrigger(newRegisteredUser, {
-            optimisticData: (currentData) => ({
-                registeredUsers: [...(currentData?.registeredUsers ?? []), newRegisteredUser],
-            }),
+        const newSubscription: Subscription = { userId, chatId, username };
+        insertTrigger(newSubscription, {
+            optimisticData: { subscriptions: [...subscriptions, newSubscription] },
         }).catch((e: unknown) => {
             console.error(e);
         });
