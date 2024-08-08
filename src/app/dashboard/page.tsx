@@ -16,7 +16,9 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
     const router = useRouter();
     const { isLoadingUser, userResponse } = useLoggedInUser();
-    const { subscriptionsResponse, isLoadingSubscriptions } = useSubscriptions();
+    const { subscriptionsResponse, isLoadingSubscriptions } = useSubscriptions(
+        userResponse?.isLoggedIn ?? false,
+    );
     const { deleteTrigger, isDeleting } = useDeleteSubscription();
     const { logoutTrigger, isLoggingOut } = useLogout();
     if (isLoadingUser) {

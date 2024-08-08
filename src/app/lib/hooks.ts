@@ -95,9 +95,9 @@ export const useLogout = () => {
     };
 };
 
-export const useSubscriptions = () => {
-    const { data, isLoading } = useSWR<SubscriptionsResponse, Error, string>(
-        subscriptionsApiPath,
+export const useSubscriptions = (shouldFetch: boolean) => {
+    const { data, isLoading } = useSWR<SubscriptionsResponse, Error, string | undefined>(
+        shouldFetch ? subscriptionsApiPath : undefined,
         async (k) => {
             const response = await fetch(k);
             if (!response.ok) {
