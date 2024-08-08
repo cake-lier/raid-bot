@@ -34,7 +34,8 @@ export default function InsertForm({
                         value={userId.toString()}
                         keyfilter="pint"
                         onChange={(e) => {
-                            setUserId(Number.parseInt(e.target.value));
+                            const parsed = Number.parseInt(e.target.value);
+                            setUserId(Number.isNaN(parsed) ? 0 : parsed);
                         }}
                     />
                     <label htmlFor="user_id">User Id</label>
@@ -49,7 +50,8 @@ export default function InsertForm({
                         value={chatId.toString()}
                         keyfilter="pint"
                         onChange={(e) => {
-                            setChatId(Number.parseInt(e.target.value));
+                            const parsed = Number.parseInt(e.target.value);
+                            setChatId(Number.isNaN(parsed) ? 0 : parsed);
                         }}
                     />
                     <label htmlFor="chat_id">Chat Id</label>
@@ -62,7 +64,6 @@ export default function InsertForm({
                         name="username"
                         className="w-full"
                         value={username}
-                        keyfilter="pint"
                         onChange={(e) => {
                             setUsername(e.target.value);
                         }}

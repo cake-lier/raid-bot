@@ -55,8 +55,8 @@ export default function Dashboard() {
                 value={subscriptionsResponse?.subscriptions}
                 loading={isLoadingSubscriptions}
             >
-                <Column field="user_id" header="User id"></Column>
-                <Column field="chat_id" header="Chat id"></Column>
+                <Column field="userId" header="User id"></Column>
+                <Column field="chatId" header="Chat id"></Column>
                 <Column field="username" header="Username"></Column>
                 <Column
                     body={deleteBodyTemplate}
