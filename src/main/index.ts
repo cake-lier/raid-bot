@@ -174,7 +174,7 @@ const main = pipe(
                 new Controller(subscriptionModel, new UserModel(storage)).registerRoutes(app);
                 return app
                     .get("*", (_, res) => {
-                        res.sendFile("out/404.html", { root: process.cwd() });
+                        res.sendFile("out/index.html", { root: process.cwd() });
                     })
                     .listen(10_000, () => {
                         resolve();

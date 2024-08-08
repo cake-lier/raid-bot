@@ -3,15 +3,29 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
-import { useDeleteSubscription, useLogout, useSubscriptions } from "@/app/lib/hooks";
+import {
+    useDeleteSubscription,
+    useLoggedInUser,
+    useLogout,
+    useSubscriptions,
+} from "@/app/lib/hooks";
 import InsertForm from "@/app/components/InsertForm";
 import { Subscription } from "@/main/SubscriptionModel";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
-    const { response, isLoading } = useSubscriptions();
+    const router = useRouter();
+    const { isLoadingUser, userResponse } = useLoggedInUser();
+    if (isLoadingUser) {
+        return "";
+    } else if (!userResponse?.isLoggedIn) {
+        router.replace("/");
+        return "";
+    }
+    const { subscriptionsResponse, isLoadingSubscriptions } = useSubscriptions();
     const { deleteTrigger, isDeleting } = useDeleteSubscription();
     const { logoutTrigger, isLoggingOut } = useLogout();
-    if (!response) {
+    if (isLoadingSubscriptions) {
         return "";
     }
     const deleteBodyTemplate = (user: Subscription) => (
@@ -22,7 +36,7 @@ export default function Dashboard() {
             onClick={() => {
                 deleteTrigger(user, {
                     optimisticData: {
-                        subscriptions: response.subscriptions.filter(
+                        subscriptions: subscriptionsResponse?.subscriptions.filter(
                             (e) => e.userId !== user.userId && e.chatId !== user.chatId,
                         ),
                     },
@@ -38,8 +52,8 @@ export default function Dashboard() {
                 stripedRows
                 sortField="username"
                 className="col-12"
-                value={response.subscriptions}
-                loading={isLoading}
+                value={subscriptionsResponse?.subscriptions}
+                loading={isLoadingSubscriptions}
             >
                 <Column field="user_id" header="User id"></Column>
                 <Column field="chat_id" header="Chat id"></Column>
@@ -51,7 +65,7 @@ export default function Dashboard() {
                     header="Delete?"
                 ></Column>
             </DataTable>
-            <InsertForm subscriptions={response.subscriptions} />
+            <InsertForm subscriptions={subscriptionsResponse?.subscriptions} />
             <Button
                 label="Logout"
                 loading={isLoggingOut}

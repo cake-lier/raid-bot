@@ -38,9 +38,9 @@ export const useLoggedInUser = () => {
         };
     });
     return {
-        response: data,
-        isLoading,
-        error,
+        userResponse: data,
+        isLoadingUser: isLoading,
+        userError: error,
     };
 };
 
@@ -110,8 +110,8 @@ export const useSubscriptions = () => {
         },
     );
     return {
-        response: data,
-        isLoading,
+        subscriptionsResponse: data,
+        isLoadingSubscriptions: isLoading,
     };
 };
 

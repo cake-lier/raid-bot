@@ -6,8 +6,8 @@ import LoginForm from "@/app/components/LoginForm";
 
 export default function Home() {
     const router = useRouter();
-    const { response } = useLoggedInUser();
-    if (response?.isLoggedIn) {
+    const { userResponse, isLoadingUser } = useLoggedInUser();
+    if (!isLoadingUser && userResponse?.isLoggedIn) {
         router.replace("/dashboard");
         return "";
     } else {

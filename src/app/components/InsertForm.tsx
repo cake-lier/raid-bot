@@ -5,7 +5,11 @@ import { FormEvent, useState } from "react";
 import { useInsertSubscription } from "@/app/lib/hooks";
 import { Subscription } from "@/main/SubscriptionModel";
 
-export default function InsertForm({ subscriptions }: { subscriptions: Subscription[] }) {
+export default function InsertForm({
+    subscriptions,
+}: {
+    subscriptions: Subscription[] | undefined;
+}) {
     const { insertTrigger, isInserting } = useInsertSubscription();
     const [userId, setUserId] = useState(0);
     const [chatId, setChatId] = useState(0);
@@ -14,7 +18,7 @@ export default function InsertForm({ subscriptions }: { subscriptions: Subscript
         e.preventDefault();
         const newSubscription: Subscription = { userId, chatId, username };
         insertTrigger(newSubscription, {
-            optimisticData: { subscriptions: [...subscriptions, newSubscription] },
+            optimisticData: { subscriptions: [...(subscriptions ?? []), newSubscription] },
         }).catch((e: unknown) => {
             console.error(e);
         });
