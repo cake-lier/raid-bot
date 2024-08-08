@@ -8,8 +8,8 @@ import { Storage } from "./Storage";
 import { SubscriptionModel } from "./SubscriptionModel";
 import session from "express-session";
 import connectMongoDBSession from "connect-mongodb-session";
-import { Controller } from "@/main/Controller";
-import { UserModel } from "@/main/UserModel";
+import { Controller } from "./Controller";
+import { UserModel } from "./UserModel";
 
 const notInGroupError =
     "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!";
