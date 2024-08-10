@@ -2,7 +2,7 @@ import { configDefaults, coverageConfigDefaults, defineConfig } from "vitest/con
 
 export default defineConfig({
     test: {
-        exclude: [...configDefaults.exclude, "**/*.js"],
+        exclude: [...configDefaults.exclude, "**/*.js", "**/*.spec.ts"],
         coverage: {
             all: false,
             provider: "istanbul",

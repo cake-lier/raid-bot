@@ -265,6 +265,10 @@ vitest.config.mjs
 vitest.config.mjs.map
 tailwind.config.mjs
 tailwind.config.mjs.map
+playwright.config.js
+playwright.config.js.map
+global.setup.js
+global.setup.js.map
 
 docs
 
@@ -283,3 +287,7 @@ build
 
 # typescript
 next-env.d.ts
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

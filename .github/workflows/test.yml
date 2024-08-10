@@ -12,8 +12,6 @@ on:
             - renovate.json
             - ".github/workflows/**"
             - .releaserc.yml
-            - Dockerfile
-            - .dockerignore
     workflow_call:
         secrets:
             CODECOV_TOKEN:
@@ -42,6 +40,8 @@ jobs:
               run: npm install
             - name: Build
               run: npx tsc
+            - name: Build client
+              run: npm run next:build
             - name: Lint with eslint
               run: npx eslint .
             - name: Reformat with prettier
@@ -61,3 +61,15 @@ jobs:
               run: node sonar-scanner.js
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            - name: Install Playwright Browsers
+              run: npx playwright install --with-deps
+            - name: Run Playwright tests
+              run: npx playwright test
+              env:
+                  DB_HOST: ${{ secrets.DB_HOST }}
+                  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+                  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+                  APP_NAME: ${{ secrets.APP_NAME }}
+                  DB_NAME: ${{ secrets.DB_NAME }}
+                  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+                  SESSION_SECRET: ${{ secrets.SESSION_SECRET }}

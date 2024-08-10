@@ -1,5 +1,6 @@
 **
 
 !Dockerfile
-!src/main
+!src
+!out
 !package*.json

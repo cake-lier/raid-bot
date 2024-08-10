@@ -57,7 +57,7 @@ export const getConnectionString = (options: ConnectionOptions): string => {
         case "srvFormatOptions":
             return (
                 `mongodb+srv://${options.dbUsername}:${options.dbPassword}@${options.dbHost}` +
-                `/?retryWrites=true&w=majority&appName=${options.appName}`
+                `/${options.dbName}?retryWrites=true&w=majority&appName=${options.appName}`
             );
         case "simpleFormatOptions":
             return (

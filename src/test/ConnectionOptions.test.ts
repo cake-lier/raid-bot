@@ -15,7 +15,7 @@ describe("A SRV connection string", () => {
                     SrvFormatOptions("username", "password", "hostname", "db", "app"),
                 ),
             ).toBe(
-                "mongodb+srv://username:password@hostname/?retryWrites=true&w=majority&appName=app",
+                "mongodb+srv://username:password@hostname/db?retryWrites=true&w=majority&appName=app",
             );
         });
     });
