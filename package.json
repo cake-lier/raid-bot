@@ -17,7 +17,8 @@
     "license": "MIT",
     "description": "Telegram bot for announcing Pokémon raids",
     "files": [
-        "src/main/*.js"
+        "src/main/*.js",
+        "out/**"
     ],
     "dependencies": {
         "bcrypt": "^5.1.1",
