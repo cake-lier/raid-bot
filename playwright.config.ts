@@ -12,6 +12,7 @@ export default defineConfig({
         trace: "on-first-retry",
     },
     globalSetup: require.resolve("./global.setup"),
+    globalTeardown: require.resolve("./global.teardown"),
     projects: [
         {
             name: "chromium",
@@ -26,4 +27,9 @@ export default defineConfig({
             use: { ...devices["Desktop Safari"] },
         },
     ],
+    webServer: {
+        command: "npm run next:dev",
+        url: "http://localhost:3000/",
+        reuseExistingServer: !process.env["CI"],
+    },
 });

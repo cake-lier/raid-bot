@@ -269,6 +269,8 @@ playwright.config.js
 playwright.config.js.map
 global.setup.js
 global.setup.js.map
+global.teardown.js
+global.teardown.js.map
 
 docs
 
