@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { FullUser } from "@/main/UserModel";
 
 const homePage = "http://localhost:3000/";
 const loginApiEndpoint = "**/api/users/loggedIn";
@@ -14,20 +15,25 @@ test("has correct title and body", async ({ page }) => {
 });
 
 test("can fill login with wrong username or password", async ({ page }) => {
+    const username = "cake_lier";
+    const password = "password";
     await page.route(loginApiEndpoint, async (route) => {
+        const user = route.request().postDataJSON() as FullUser;
         switch (route.request().method()) {
             case "GET":
                 await route.fulfill({ status: 404 });
                 break;
             case "POST":
+                expect(user.username).toBe(username);
+                expect(user.password).toBe(password);
                 await route.fulfill({ status: 401 });
                 break;
             default:
         }
     });
     await page.goto(homePage);
-    await page.locator('input[name="username"]').fill("cake_lier");
-    await page.locator(passwordSelector).fill("password");
+    await page.locator('input[name="username"]').fill(username);
+    await page.locator(passwordSelector).fill(password);
     const loginButton = page.getByRole("button", { name: "Login" });
     await loginButton.click();
     await loginButton.isDisabled();
@@ -39,11 +45,14 @@ test("can fill login with right username and password", async ({ page }) => {
     const username = "cake_lier";
     const password = "password";
     await page.route(loginApiEndpoint, async (route) => {
+        const user = route.request().postDataJSON() as FullUser;
         switch (route.request().method()) {
             case "GET":
                 await route.fulfill({ status: 404 });
                 break;
             case "POST":
+                expect(user.username).toBe(username);
+                expect(user.password).toBe(password);
                 await route.fulfill({ json: { username } });
                 break;
             default:

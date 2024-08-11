@@ -12,6 +12,7 @@ import {
 import InsertForm from "@/app/components/InsertForm";
 import { Subscription } from "@/main/SubscriptionModel";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
     const router = useRouter();
@@ -21,7 +22,11 @@ export default function Dashboard() {
     );
     const { deleteTrigger, isDeleting } = useDeleteSubscription();
     const { logoutTrigger, isLoggingOut } = useLogout();
-    if (isLoadingUser) {
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => {
+        setIsMounted(true);
+    }, [setIsMounted]);
+    if (!isMounted || isLoadingUser) {
         return "";
     } else if (!userResponse?.isLoggedIn) {
         router.replace("/");
