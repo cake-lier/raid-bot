@@ -18,7 +18,7 @@
     ],
     "dependencies": {
         "fp-ts": "2.16.9",
-        "mongodb": "6.8.1",
+        "mongodb": "6.8.2",
         "telegraf": "4.16.3"
     },
     "devDependencies": {
