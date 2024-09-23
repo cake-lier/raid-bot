@@ -15,7 +15,7 @@ describe("A SRV connection string", () => {
                     SrvFormatOptions("username", "password", "hostname", "db", "app"),
                 ),
             ).toBe(
-                "mongodb+srv://username:password@hostname/?retryWrites=true&w=majority&appName=app",
+                "mongodb+srv://username:password@hostname/db?retryWrites=true&w=majority&appName=app",
             );
         });
     });
@@ -26,7 +26,7 @@ describe("A simple connection string", () => {
         it("should be valid", () => {
             expect(
                 getConnectionString(SimpleFormatOptions(O.none, O.none, "hostname", O.none, "db")),
-            ).toBe("mongodb://hostname/?directConnection=true");
+            ).toBe("mongodb://hostname/db?directConnection=true");
         });
     });
 
@@ -36,7 +36,7 @@ describe("A simple connection string", () => {
                 getConnectionString(
                     SimpleFormatOptions(O.none, O.none, "hostname", O.some(3000), "db"),
                 ),
-            ).toBe("mongodb://hostname:3000/?directConnection=true");
+            ).toBe("mongodb://hostname:3000/db?directConnection=true");
         });
     });
 
@@ -46,7 +46,7 @@ describe("A simple connection string", () => {
                 getConnectionString(
                     SimpleFormatOptions(O.some("username"), O.none, "hostname", O.none, "db"),
                 ),
-            ).toBe("mongodb://username@hostname/?directConnection=true");
+            ).toBe("mongodb://username@hostname/db?directConnection=true");
         });
     });
 
@@ -56,7 +56,7 @@ describe("A simple connection string", () => {
                 getConnectionString(
                     SimpleFormatOptions(O.none, O.some("password"), "hostname", O.none, "db"),
                 ),
-            ).toBe("mongodb://hostname/?directConnection=true");
+            ).toBe("mongodb://hostname/db?directConnection=true");
         });
     });
 
@@ -72,7 +72,7 @@ describe("A simple connection string", () => {
                         "db",
                     ),
                 ),
-            ).toBe("mongodb://username:password@hostname:3000/?directConnection=true");
+            ).toBe("mongodb://username:password@hostname:3000/db?directConnection=true");
         });
     });
 });

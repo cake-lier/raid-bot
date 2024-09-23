@@ -1,5 +1,4 @@
 import * as O from "fp-ts/Option";
-import { pipe } from "fp-ts/function";
 import { Option } from "fp-ts/Option";
 
 export type ConnectionOptions = SrvFormatOptions | SimpleFormatOptions;
@@ -56,8 +55,8 @@ export const getConnectionString = (options: ConnectionOptions): string => {
     switch (options._tag) {
         case "srvFormatOptions":
             return (
-                `mongodb+srv://${options.dbUsername}:${options.dbPassword}@${options.dbHost}` +
-                `/?retryWrites=true&w=majority&appName=${options.appName}`
+                `mongodb+srv://${options.dbUsername}:${options.dbPassword}@${options.dbHost}/${options.dbName}` +
+                `?retryWrites=true&w=majority&appName=${options.appName}`
             );
         case "simpleFormatOptions":
             return (
@@ -71,12 +70,12 @@ export const getConnectionString = (options: ConnectionOptions): string => {
                         )(options.dbPassword),
                 )(options.dbUsername) +
                 options.dbHost +
-                pipe(
-                    options.dbPort,
-                    O.map((p) => `:${p.toString()}`),
-                    O.getOrElse(() => ""),
-                ) +
-                "/?directConnection=true"
+                O.fold(
+                    () => "",
+                    (p: number) => `:${p.toString()}`
+                )(options.dbPort) +
+                `/${options.dbName}` +
+                "?directConnection=true"
             );
     }
 };
