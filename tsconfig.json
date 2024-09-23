@@ -14,10 +14,13 @@
         "noUnusedParameters": true,
         "removeComments": true,
         "strict": true,
-        "sourceMap": true
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "incremental": true
     },
     "include": ["src/**/*.ts"],
-    "exclude": ["**/*.spec.ts"],
+    "exclude": ["node_modules"],
     "typedocOptions": {
         "entryPoints": ["src/main/index.ts"],
         "out": "docs"
