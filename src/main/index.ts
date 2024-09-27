@@ -4,6 +4,7 @@ import { SrvFormatOptions } from "./ConnectionOptions";
 import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
 import { constVoid, pipe } from "fp-ts/function";
+import { Storage } from "./Storage";
 
 const notInGroupError =
     "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!";
@@ -19,12 +20,13 @@ const main = pipe(
     ),
     TE.bind("a", () => TE.fromNullable("Missing app name env variable")(process.env["APP_NAME"])),
     TE.bind("d", () => TE.fromNullable("Missing db name env variable")(process.env["DB_NAME"])),
-    TE.bind("m", ({ h, u, p, a, d }) =>
-        TE.tryCatch(() => Model.create(SrvFormatOptions(u, p, h, d, a)), String),
+    TE.bind("s", ({ h, u, p, a, d }) =>
+        TE.tryCatch(() => Storage.create(SrvFormatOptions(u, p, h, d, a)), String),
     ),
+    TE.let("m", ({ s }) => new Model(s)),
     TE.bind("t", () => TE.fromNullable("Missing bot token env variable")(process.env["BOT_TOKEN"])),
     TE.let("b", ({ t }) => new Telegraf(t)),
-    TE.flatMap(({ m, b }) =>
+    TE.flatMap(({ s, m, b }) =>
         TE.tryCatch(() => {
             b.start((c) =>
                 c.reply(
@@ -47,7 +49,7 @@ const main = pipe(
                     return await c.reply(notInGroupError);
                 }
                 const name = c.from.username ?? c.from.first_name;
-                if (await m.insertUser(c.from.id, name, c.chat.id)) {
+                if (await m.insertSubscription({ userId: c.from.id, username: name, chatId: c.chat.id })) {
                     return await c.reply(`Ho inserito ${name} tra chi notificare!`);
                 }
                 return Promise.resolve();
@@ -56,7 +58,7 @@ const main = pipe(
                 if (!["group", "supergroup"].includes(c.chat.type)) {
                     return await c.reply(notInGroupError);
                 }
-                if (await m.deleteUser(c.from.id, c.chat.id)) {
+                if (await m.deleteSubscription(c.from.id, c.chat.id)) {
                     return await c.reply(
                         `Ho rimosso ${c.from.username ?? c.from.first_name} da chi notificare!`,
                     );
@@ -81,8 +83,10 @@ const main = pipe(
                         (e) => c.reply(e),
                         (f) =>
                             pipe(
-                                TE.tryCatch(() => m.getAllUsers(c.chat.id), String),
-                                TE.map((us) => f.concat(...us.map((u) => `@${u}\n`), "!!!")),
+                                TE.tryCatch(() => m.getAllSubscriptionsForChat(c.chat.id), String),
+                                TE.map((us) =>
+                                    f.concat(...us.map((u) => `@${u.username}\n`), "!!!"),
+                                ),
                                 TE.foldW(
                                     (e) => () => Promise.reject(new Error(e)),
                                     (r) => () => c.reply(r),
@@ -93,13 +97,13 @@ const main = pipe(
             });
             process.once("SIGINT", () => {
                 b.stop("SIGINT");
-                m.cleanUp().catch((e: unknown) => {
+                s.cleanUp().catch((e: unknown) => {
                     console.error(e);
                 });
             });
             process.once("SIGTERM", () => {
                 b.stop("SIGTERM");
-                m.cleanUp().catch((e: unknown) => {
+                s.cleanUp().catch((e: unknown) => {
                     console.error(e);
                 });
             });

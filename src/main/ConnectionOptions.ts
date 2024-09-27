@@ -72,7 +72,7 @@ export const getConnectionString = (options: ConnectionOptions): string => {
                 options.dbHost +
                 O.fold(
                     () => "",
-                    (p: number) => `:${p.toString()}`
+                    (p: number) => `:${p.toString()}`,
                 )(options.dbPort) +
                 `/${options.dbName}` +
                 "?directConnection=true"
