@@ -23,15 +23,21 @@ const main = pipe(
     ),
     TE.bind("t", () => TE.fromNullable("Missing bot token env variable")(process.env["BOT_TOKEN"])),
     TE.let("b", ({ t }) => new Telegraf(t)),
-    TE.bind("l", () => TE.tryCatch(() => new Promise<readonly string []>((resolve, reject) => {
-        fs.readFile("names.txt", (e, d) => {
-            if (e) {
-                reject(e);
-            } else {
-                resolve(d.toString().split("\n"));
-            }
-        });
-    }), String)),
+    TE.bind("l", () =>
+        TE.tryCatch(
+            () =>
+                new Promise<readonly string[]>((resolve, reject) => {
+                    fs.readFile("names.txt", (e, d) => {
+                        if (e) {
+                            reject(e);
+                        } else {
+                            resolve(d.toString().split("\n"));
+                        }
+                    });
+                }),
+            String,
+        ),
+    ),
     TE.flatMap(({ s, b, l }) =>
         TE.tryCatch(() => {
             new Controller(s, b, l).registerRoutes();

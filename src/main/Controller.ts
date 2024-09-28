@@ -21,7 +21,7 @@ export default class Controller {
     public constructor(
         storage: Storage,
         private readonly bot: Telegraf,
-        namesList: readonly string[]
+        namesList: readonly string[],
     ) {
         this.model = new Model(storage);
         this.spellchecker = new Spellchecker(namesList);
@@ -92,30 +92,42 @@ export default class Controller {
         return Promise.resolve();
     };
 
-    private sendRaidMessage = async (ctx: UpdateContext, minutes: number, rest: readonly string[]): Promise<unknown> => {
+    private sendRaidMessage = async (
+        ctx: UpdateContext,
+        minutes: number,
+        rest: readonly string[],
+    ): Promise<unknown> => {
         const pokemonName = this.spellchecker.spellcheck(rest.join(" "));
         try {
             const users = await this.model.getAllSubscriptionsForChat(ctx.chat.id);
             return await ctx.reply(
                 `Un nuovo raid per ${pokemonName} è iniziato e mancano ${minutes.toString()} minuti alla fine!\n`.concat(
                     ...users.map((u) => `@${u.username}\n`),
-                    "!!!"
-                )
+                    "!!!",
+                ),
             );
         } catch (e: unknown) {
             console.log(e);
         }
-        return await ctx.reply("Mi dispiace, si è verificato un errore, non posso eseguire la richiesta!");
-    }
+        return await ctx.reply(
+            "Mi dispiace, si è verificato un errore, non posso eseguire la richiesta!",
+        );
+    };
 
     private raid = async (ctx: UpdateContext): Promise<unknown> => {
-        const commandArguments = ctx.msg.text.match(/^\/\S+\s(.*)$/)?.[1]?.split(/\s/);
+        const commandArguments = /^\/\S+\s(.*)$/.exec(ctx.msg.text)?.[1]?.split(/\s/);
         if (!commandArguments || commandArguments.length < 2) {
-            return await ctx.reply("Mi dispiace, non sono state passate abbastanza informazioni al comando!");
+            return await ctx.reply(
+                "Mi dispiace, non sono state passate abbastanza informazioni al comando!",
+            );
         }
         const lastArgument = commandArguments[commandArguments.length - 1];
         if (lastArgument && !isNaN(+lastArgument)) {
-            return this.sendRaidMessage(ctx, Number(lastArgument), commandArguments.slice(0, commandArguments.length - 1));
+            return this.sendRaidMessage(
+                ctx,
+                Number(lastArgument),
+                commandArguments.slice(0, commandArguments.length - 1),
+            );
         }
         const firstArgument = commandArguments[0];
         if (!firstArgument || isNaN(+firstArgument)) {
