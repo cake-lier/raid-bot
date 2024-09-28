@@ -7,8 +7,14 @@ import { Storage } from "./Storage";
 import { Message, Update } from "telegraf/types";
 import { Types } from "telegraf";
 
-const notInGroupError =
-    "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!";
+type UpdateContext = NarrowedContext<
+    Context,
+    {
+        message: Update.New & Update.NonChannel & Message.TextMessage;
+        update_id: number;
+    }
+> &
+    Types.CommandContextExtn;
 
 export default class Controller {
     private readonly model: Model;
@@ -23,37 +29,19 @@ export default class Controller {
     public registerRoutes() {
         this.bot.start(this.start);
         this.bot.help(this.help);
-        this.bot.command("in", this.in);
-        this.bot.command("out", this.out);
-        this.bot.command("raid", this.raid);
+        this.bot.command("in", (c) => this.checkIfInGroup(c, this.in));
+        this.bot.command("out", (c) => this.checkIfInGroup(c, this.out));
+        this.bot.command("raid", (c) => this.checkIfInGroup(c, this.raid));
     }
 
-    private start = async (
-        ctx: NarrowedContext<
-            Context,
-            {
-                message: Update.New & Update.NonChannel & Message.TextMessage;
-                update_id: number;
-            }
-        > &
-            Types.CommandContextExtn,
-    ): Promise<unknown> => {
+    private start = async (ctx: UpdateContext): Promise<unknown> => {
         return await ctx.reply(
             "Ciao! Questo è un bot per la generazione automatica di notifiche per i raid su Pokémon GO. " +
                 "Usa /help per sapere di più sul suo funzionamento.",
         );
     };
 
-    private help = async (
-        ctx: NarrowedContext<
-            Context,
-            {
-                message: Update.New & Update.NonChannel & Message.TextMessage;
-                update_id: number;
-            }
-        > &
-            Types.CommandContextExtn,
-    ): Promise<unknown> => {
+    private help = async (ctx: UpdateContext): Promise<unknown> => {
         return await ctx.replyWithMarkdownV2(
             "Comandi disponibili:\n" +
                 "• /in: usalo una sola volta per ricevere le notifiche anche con il gruppo in silenzioso\n" +
@@ -64,45 +52,37 @@ export default class Controller {
         );
     };
 
-    private in = async (
-        ctx: NarrowedContext<
-            Context,
-            {
-                message: Update.New & Update.NonChannel & Message.TextMessage;
-                update_id: number;
-            }
-        > &
-            Types.CommandContextExtn,
+    private checkIfInGroup = async (
+        ctx: UpdateContext,
+        next: (ctx: UpdateContext) => Promise<unknown>,
     ): Promise<unknown> => {
-        if (!["group", "supergroup"].includes(ctx.chat.type)) {
-            return await ctx.reply(notInGroupError);
+        if (ctx.chat.type === "private") {
+            return await ctx.reply(
+                "Mi dispiace, questa funzione è disponibile solamente nei gruppi e nei supergruppi!",
+            );
         }
-        const name = ctx.from.username ?? ctx.from.first_name;
+        return next(ctx);
+    };
+
+    private in = async (ctx: UpdateContext): Promise<unknown> => {
+        if (!ctx.from.username) {
+            return await ctx.reply(
+                "Mi dispiace, ma questo bot non funziona se l'utente non possiede uno username!",
+            );
+        }
         if (
             await this.model.insertSubscription({
                 userId: ctx.from.id,
-                username: name,
+                username: ctx.from.username,
                 chatId: ctx.chat.id,
             })
         ) {
-            return await ctx.reply(`Ho inserito ${name} tra chi notificare!`);
+            return await ctx.reply(`Ho inserito ${ctx.from.username} tra chi notificare!`);
         }
         return Promise.resolve();
     };
 
-    private out = async (
-        ctx: NarrowedContext<
-            Context,
-            {
-                message: Update.New & Update.NonChannel & Message.TextMessage;
-                update_id: number;
-            }
-        > &
-            Types.CommandContextExtn,
-    ): Promise<unknown> => {
-        if (!["group", "supergroup"].includes(ctx.chat.type)) {
-            return await ctx.reply(notInGroupError);
-        }
+    private out = async (ctx: UpdateContext): Promise<unknown> => {
         if (await this.model.deleteSubscription(ctx.from.id, ctx.chat.id)) {
             return await ctx.reply(
                 `Ho rimosso ${ctx.from.username ?? ctx.from.first_name} da chi notificare!`,
@@ -111,19 +91,7 @@ export default class Controller {
         return Promise.resolve();
     };
 
-    private raid = async (
-        ctx: NarrowedContext<
-            Context,
-            {
-                message: Update.New & Update.NonChannel & Message.TextMessage;
-                update_id: number;
-            }
-        > &
-            Types.CommandContextExtn,
-    ) => {
-        if (!["group", "supergroup"].includes(ctx.chat.type)) {
-            return await ctx.reply(notInGroupError);
-        }
+    private raid = async (ctx: UpdateContext): Promise<unknown> => {
         return await pipe(
             E.Do,
             E.bind("p", () => E.fromNullable("Al messaggio manca il pokémon!")(ctx.args[0])),
