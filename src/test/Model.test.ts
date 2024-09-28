@@ -30,7 +30,9 @@ describe("A model", () => {
             expect(
                 await model!.insertSubscription({ userId: 42, username: "cake_lier", chatId: 42 }),
             ).toBe(true);
-            expect(await model!.getAllSubscriptionsForChat(42)).toStrictEqual([{ userId: 42, username: "cake_lier", chatId: 42 }]);
+            expect(await model!.getAllSubscriptionsForChat(42)).toStrictEqual([
+                { userId: 42, username: "cake_lier", chatId: 42 },
+            ]);
             await model!.deleteSubscription(42, 42);
         });
     });
