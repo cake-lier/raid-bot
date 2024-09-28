@@ -5,6 +5,7 @@ import * as TE from "fp-ts/TaskEither";
 import { constVoid, pipe } from "fp-ts/function";
 import { Storage } from "./Storage";
 import Controller from "./Controller";
+import * as fs from "fs";
 
 const main = pipe(
     TE.Do,
@@ -22,9 +23,18 @@ const main = pipe(
     ),
     TE.bind("t", () => TE.fromNullable("Missing bot token env variable")(process.env["BOT_TOKEN"])),
     TE.let("b", ({ t }) => new Telegraf(t)),
-    TE.flatMap(({ s, b }) =>
+    TE.bind("l", () => TE.tryCatch(() => new Promise<readonly string []>((resolve, reject) => {
+        fs.readFile("names.txt", (e, d) => {
+            if (e) {
+                reject(e);
+            } else {
+                resolve(d.toString().split("\n"));
+            }
+        });
+    }), String)),
+    TE.flatMap(({ s, b, l }) =>
         TE.tryCatch(() => {
-            new Controller(s, b).registerRoutes();
+            new Controller(s, b, l).registerRoutes();
             process.once("SIGINT", () => {
                 b.stop("SIGINT");
                 s.cleanUp().catch((e: unknown) => {

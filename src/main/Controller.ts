@@ -1,11 +1,9 @@
 import { Context, NarrowedContext, Telegraf } from "telegraf";
-import * as E from "fp-ts/Either";
-import * as TE from "fp-ts/TaskEither";
-import { pipe } from "fp-ts/function";
 import { Model } from "./Model";
 import { Storage } from "./Storage";
 import { Message, Update } from "telegraf/types";
 import { Types } from "telegraf";
+import Spellchecker from "./Spellchecker";
 
 type UpdateContext = NarrowedContext<
     Context,
@@ -18,12 +16,15 @@ type UpdateContext = NarrowedContext<
 
 export default class Controller {
     private readonly model: Model;
+    private readonly spellchecker: Spellchecker;
 
     public constructor(
         storage: Storage,
         private readonly bot: Telegraf,
+        namesList: readonly string[]
     ) {
         this.model = new Model(storage);
+        this.spellchecker = new Spellchecker(namesList);
     }
 
     public registerRoutes() {
@@ -91,32 +92,35 @@ export default class Controller {
         return Promise.resolve();
     };
 
+    private sendRaidMessage = async (ctx: UpdateContext, minutes: number, rest: readonly string[]): Promise<unknown> => {
+        const pokemonName = this.spellchecker.spellcheck(rest.join(" "));
+        try {
+            const users = await this.model.getAllSubscriptionsForChat(ctx.chat.id);
+            return await ctx.reply(
+                `Un nuovo raid per ${pokemonName} è iniziato e mancano ${minutes.toString()} minuti alla fine!\n`.concat(
+                    ...users.map((u) => `@${u.username}\n`),
+                    "!!!"
+                )
+            );
+        } catch (e: unknown) {
+            console.log(e);
+        }
+        return await ctx.reply("Mi dispiace, si è verificato un errore, non posso eseguire la richiesta!");
+    }
+
     private raid = async (ctx: UpdateContext): Promise<unknown> => {
-        return await pipe(
-            E.Do,
-            E.bind("p", () => E.fromNullable("Al messaggio manca il pokémon!")(ctx.args[0])),
-            E.bind("m", () =>
-                E.fromNullable("Al messaggio manca il numero di minuti!")(ctx.args[1]),
-            ),
-            E.map(
-                ({ p, m }) =>
-                    `Un nuovo raid per ${p} è iniziato e mancano ${m} minuti alla fine!\n`,
-            ),
-            E.fold(
-                (e) => ctx.reply(e),
-                (f) =>
-                    pipe(
-                        TE.tryCatch(
-                            () => this.model.getAllSubscriptionsForChat(ctx.chat.id),
-                            String,
-                        ),
-                        TE.map((us) => f.concat(...us.map((u) => `@${u.username}\n`), "!!!")),
-                        TE.foldW(
-                            (e) => () => Promise.reject(new Error(e)),
-                            (r) => () => ctx.reply(r),
-                        ),
-                    )(),
-            ),
-        );
+        const commandArguments = ctx.msg.text.match(/^\/\S+\s(.*)$/)?.[1]?.split(/\s/);
+        if (!commandArguments || commandArguments.length < 2) {
+            return await ctx.reply("Mi dispiace, non sono state passate abbastanza informazioni al comando!");
+        }
+        const lastArgument = commandArguments[commandArguments.length - 1];
+        if (lastArgument && !isNaN(+lastArgument)) {
+            return this.sendRaidMessage(ctx, Number(lastArgument), commandArguments.slice(0, commandArguments.length - 1));
+        }
+        const firstArgument = commandArguments[0];
+        if (!firstArgument || isNaN(+firstArgument)) {
+            return this.sendRaidMessage(ctx, Number(firstArgument), commandArguments.slice(1));
+        }
+        return await ctx.reply("Mi dispiace, al messaggio mancano i minuti!");
     };
 }
