@@ -4,10 +4,10 @@ export default defineConfig({
     test: {
         exclude: [...configDefaults.exclude, "**/*.js"],
         coverage: {
-            all: false,
+            all: true,
             provider: "istanbul",
             reporter: ["text", "cobertura", "lcov"],
-            exclude: [...coverageConfigDefaults.exclude, "**/index.ts"],
+            exclude: [...coverageConfigDefaults.exclude, "*.js", "**/index.ts", "**/Controller.ts"],
         },
     },
 });
