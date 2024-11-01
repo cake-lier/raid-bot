@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/cake-lier/raid-bot/compare/v1.0.0...v1.1.0) (2024-11-01)
+
+
+### Bug Fixes
+
+* fix MongoDB connection strings creation ([371cba0](https://github.com/cake-lier/raid-bot/commit/371cba067bf9d0d465a24503ef4e023e774446ae))
+
+
+### Features
+
+* add spellchecker for pokemon names ([86a6071](https://github.com/cake-lier/raid-bot/commit/86a6071570e3c81da5f4638283d99b875f3dfc35))
+
 # 1.0.0 (2024-07-25)
 
 ### Bug Fixes
