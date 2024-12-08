@@ -43,7 +43,7 @@
         "semantic-release-replace-plugin": "^1.2.7",
         "sonarqube-scanner": "^4.0.1",
         "testcontainers": "^10.10.4",
-        "typedoc": "^0.26.5",
+        "typedoc": "^0.27.0",
         "typegram": "^5.2.0",
         "typescript": "^5.5.3",
         "typescript-eslint": "^8.0.0",
