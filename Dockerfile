@@ -1,4 +1,4 @@
-FROM node:22.13.1-alpine
+FROM node:22.18.0-alpine
 
 COPY package.json ./
 RUN npm install --omit=dev
